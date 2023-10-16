@@ -29,11 +29,7 @@ type Server struct {
 
 func New() (*Server, error) {
 
-	serverConf, err := serverConfFromFile()
-	if err != nil {
-		return nil, err
-	}
-	netConf, err := netConfFromFile()
+	serverConf, netConf, err := configFromFile()
 	if err != nil {
 		return nil, err
 	}
@@ -44,8 +40,8 @@ func New() (*Server, error) {
 		return nil, err
 	}
 	s := &Server{
-		serverConf: serverConf,
-		netConf:    netConf,
+		serverConf: *serverConf,
+		netConf:    *netConf,
 
 		containerPortStartFrom: serverConf.NATStartFromPort,
 		containers:             map[string]*nodectrl.Container{},

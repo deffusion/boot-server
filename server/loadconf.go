@@ -6,49 +6,34 @@ import (
 	"os"
 )
 
+type Config struct {
+	ServerConfig `yaml:"Server"`
+	NetConfig    `yaml:"Net"`
+}
+
 type ServerConfig struct {
-	IP               string
-	HTTP             uint
-	NATStartFromPort uint
+	IP               string `yaml:"IP"`
+	HTTP             uint   `yaml:"HTTP"`
+	NATStartFromPort uint   `yaml:"NATStartFromPort"`
 }
 
 type NetConfig struct {
-	Size           int
-	NPeerToConnect int
+	Size           int `yaml:"Size"`
+	NPeerToConnect int `yaml:"NPeerToConnect"`
 }
 
-func readFile() ([]byte, error) {
+func configFromFile() (*ServerConfig, *NetConfig, error) {
 	f, err := os.Open("./config/config.yml")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	var buff bytes.Buffer
 	buff.ReadFrom(f)
-	return buff.Bytes(), nil
-}
-
-func serverConfFromFile() (ServerConfig, error) {
-	conf := ServerConfig{}
-	b, err := readFile()
-	if err != nil {
-		return conf, err
-	}
+	b := buff.Bytes()
+	var conf Config
 	err = yaml.Unmarshal(b, &conf)
 	if err != nil {
-		return conf, err
+		return nil, nil, err
 	}
-	return conf, nil
-}
-
-func netConfFromFile() (NetConfig, error) {
-	conf := NetConfig{}
-	b, err := readFile()
-	if err != nil {
-		return conf, err
-	}
-	err = yaml.Unmarshal(b, &conf)
-	if err != nil {
-		return conf, err
-	}
-	return conf, nil
+	return &conf.ServerConfig, &conf.NetConfig, nil
 }
