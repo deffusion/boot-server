@@ -1,0 +1,8 @@
+# rename this file to config.yml
+Server:
+  IP: 127.0.0.1           # IP of your server
+  HTTP: 8080
+  NATStartFromPort: 1000
+Net:
+  Size: 10                # number of containers
+  NPeerToConnect: 3
